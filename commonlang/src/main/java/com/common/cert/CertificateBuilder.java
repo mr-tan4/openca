@@ -1,6 +1,6 @@
 package com.common.cert;
 
-import com.sun.istack.internal.NotNull;
+
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.BasicConstraints;
 import org.bouncycastle.asn1.x509.Extension;
@@ -13,6 +13,7 @@ import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +30,8 @@ import java.util.List;
 
 /**
  * 证书生成类
+ * @author robert
+ * @since 2020-05-19
  */
 public class CertificateBuilder {
 
@@ -172,7 +175,7 @@ public class CertificateBuilder {
             LOGGER.info("该证书{}一张CA证书", isCA ? "是" : "不是");
             LOGGER.info(pathLen == 0 ? "该证书不限制证书长度" : "该证书限制证书长度,证书长度为{}", pathLen);
             if (isCA) {
-                if (pathLen != 0) {
+                if (pathLen > 0) {
                     builder.addExtension(Extension.basicConstraints, true, new BasicConstraints(pathLen));
                 }else {
                     builder.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
