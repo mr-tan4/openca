@@ -1,7 +1,6 @@
 package com.robert.openca.dao.certificate;
 
-import com.robert.openca.dao.BasicDO;
-import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.math.BigInteger;
@@ -39,18 +38,18 @@ public class CertificateInfoDO extends BasicDO {
 
     /**
      * 证书在 。。。 之前过期
+     * 默认为 0000-00-00 00:00:00
      */
-    @Temporal(TemporalType.TIMESTAMP)
+    @CreatedDate
     @Column(nullable = false)
-    @CreationTimestamp
     private Date noBefore;
 
     /**
      * 证书在 ... 之后过期
+     * 默认为 0000-00-00 00:00:00
      */
-    @Temporal(TemporalType.TIMESTAMP)
+    @CreatedDate
     @Column(nullable = false)
-    @CreationTimestamp
     private Date noAfter;
 
     public boolean isCa() {

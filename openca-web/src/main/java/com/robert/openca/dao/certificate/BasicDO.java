@@ -1,7 +1,8 @@
-package com.robert.openca.dao;
+package com.robert.openca.dao.certificate;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 
 /**
  * 基本信息 会被复用
@@ -9,6 +10,8 @@ import javax.persistence.Id;
  * @since 2020-05-19
  * @version 1.0
  */
+
+@MappedSuperclass
 public class BasicDO {
 
     /**
