@@ -1,4 +1,4 @@
-package com.robert.openca.ca;
+package com.robert.openca.ra;
 
 import com.robert.openca.dao.certificate.CertificateRequestDO;
 
@@ -14,6 +14,7 @@ public class CreatePKCS10CertificateRequest {
      * @return 文件存放路径
      */
     public static String generatorRequestFromPEM(CertificateRequestDO certificateRequestDO) {
+
         return null;
     }
 

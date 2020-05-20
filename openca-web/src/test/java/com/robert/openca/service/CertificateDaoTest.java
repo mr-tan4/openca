@@ -1,6 +1,7 @@
 package com.robert.openca.service;
 
 import com.robert.openca.dao.certificate.CertificateInfoDO;
+import com.robert.openca.service.certificate.CertificateDao;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
