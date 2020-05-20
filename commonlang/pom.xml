@@ -16,7 +16,6 @@
     <name>common</name>
 
 
-
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on -->
         <dependency>
@@ -56,7 +55,6 @@
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>19.0.0</version>
         </dependency>
     </dependencies>
 
