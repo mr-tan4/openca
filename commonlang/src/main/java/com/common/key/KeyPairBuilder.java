@@ -1,5 +1,6 @@
 package com.common.key;
 
+import com.common.provider.Providers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +28,7 @@ public class KeyPairBuilder extends KeyBuilder {
         return this;
     }
 
-    public KeyPairBuilder setProvider(Provider provider) {
+    public KeyPairBuilder setProvider(String provider) {
         this.provider = provider;
         return this;
     }
@@ -42,22 +43,24 @@ public class KeyPairBuilder extends KeyBuilder {
 
     public KeyPair build() {
         try {
-            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(algorithm, provider);
-            LOGGER.info("创建密钥对产生器  算法为: {} ,算法提供者为: {}", algorithm, provider.getName());
+            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(algorithm,
+                    Providers.getProviderOfName(provider));
+            LOGGER.info("创建密钥对产生器  算法为: {} ,算法提供者为: {}", algorithm, Providers.getProviderOfName(provider)
+                    .getName());
             keyPairGenerator.initialize(length, secureRandom);
             LOGGER.info("初始化密钥对产生器 密钥长度为: {}, 随机数产生器算法为: {}, 随机数产生器算法提供者为: {}", length,
                     secureRandom.getAlgorithm(), secureRandom.getProvider().getName());
             KeyPair keyPair = keyPairGenerator.genKeyPair();
             LOGGER.info("密钥对生产成功!");
             LOGGER.info("密钥对信息: ");
-            LOGGER.info("密钥算法: {}",algorithm);
-            LOGGER.info("密钥长度: {}",length);
+            LOGGER.info("密钥算法: {}", algorithm);
+            LOGGER.info("密钥长度: {}", length);
             return keyPair;
         } catch (NoSuchAlgorithmException e) {
-            LOGGER.error("密钥对生成失败! 失败原因: {}",e.getMessage());
+            LOGGER.error("密钥对生成失败! 失败原因: {}", e.getMessage());
             e.printStackTrace();
-        }catch (InvalidParameterException e){
-            LOGGER.error("密钥对生成失败! 失败原因: {}",e.getMessage());
+        } catch (InvalidParameterException e) {
+            LOGGER.error("密钥对生成失败! 失败原因: {}", e.getMessage());
             e.printStackTrace();
         }
         return null;

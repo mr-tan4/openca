@@ -19,7 +19,7 @@ public class KeyPairBuilderTest {
         KeyPair keyPair = new KeyPairBuilder()
                 .setAlgorithm("ECDSA")
                 .setLength(521)
-                .setProvider(new BouncyCastleProvider())
+                .setProvider("bc")
                 .setSecureRandom(new SecureRandom())
                 .build();
         assert keyPair.getPublic() instanceof ECPublicKey;
@@ -35,7 +35,7 @@ public class KeyPairBuilderTest {
         KeyPairBuilder.KeyBuilderConfigure configure = new KeyBuilder.KeyBuilderConfigure();
         configure.setLength(2048);
         configure.setAlgorithm("RSA");
-        configure.setProvider(new BouncyCastleProvider());
+        configure.setProvider("bc");
         configure.setSecureRandom(new SecureRandom());
 
         KeyPair keyPair = new KeyPairBuilder().setConfiguration(configure).build();

@@ -1,12 +1,22 @@
 package com.robert.openca.controller;
 
+import com.robert.openca.constant.UUIDUtil;
 import com.robert.openca.dao.key.KeyPairDO;
+import com.robert.openca.dao.key.PrivateKeyDO;
+import com.robert.openca.dao.key.PublicKeyDO;
 import com.robert.openca.dao.key.SecureKeyDO;
+import com.robert.openca.key.keypair.KeyPairStrut;
+import com.robert.openca.key.soft.KeyPairGenerator;
 import com.robert.openca.service.key.KeyPairDao;
 import com.robert.openca.service.key.PrivateKeyDao;
 import com.robert.openca.service.key.PublicKeyDao;
 import com.robert.openca.service.key.SecureKeyDao;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
@@ -19,8 +29,11 @@ import javax.validation.constraints.NotNull;
  * @version 1.0
  * @since 2020-05-21
  */
-@RestController
-@RequestMapping("/")
+
+@Api()
+@Controller("key")
+@RequestMapping("/key")
+@Slf4j
 public class KeyController {
 
     @Autowired
@@ -38,11 +51,31 @@ public class KeyController {
     /**
      * 创建密钥对
      *
-     * @param keyPairDO json格式的请求文件
+     * @param keyPairStrut json格式的请求文件
      */
+    @ApiOperation(value = "生成密钥对", notes="生成密钥对")
     @PostMapping("/create/KeyPair")
-    public void createKeyPair(@RequestBody @NotNull KeyPairDO keyPairDO) {
-        keyPairDao.save(keyPairDO);
+    public void createKeyPair(@RequestBody @NotNull KeyPairStrut keyPairStrut) {
+        PrivateKeyDO privateKeyDO = keyPairStrut.getPrivateKeyDO();
+        PublicKeyDO publicKeyDO = keyPairStrut.getPublicKeyDO();
+        try {
+            new KeyPairGenerator().generatorKeyPair(keyPairStrut);
+            privateKeyDO.setId(UUIDUtil.get());
+            publicKeyDO.setId(UUIDUtil.get());
+            System.out.println(UUIDUtil.get().length());
+            privateKeyDao.save(privateKeyDO);
+            publicKeyDao.save(publicKeyDO);
+            KeyPairDO keyPairDO = new KeyPairDO();
+            keyPairDO.setID(UUIDUtil.get());
+            keyPairDO.setPublic_key_id(publicKeyDO.getId());
+            keyPairDO.setPrivate_key_id(privateKeyDO.getId());
+            keyPairDO.setCertificate_id(UUIDUtil.get());
+            keyPairDO.setCertificate_request_id(UUIDUtil.get());
+            keyPairDao.save(keyPairDO);
+            log.info("创建密钥对成功!");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**

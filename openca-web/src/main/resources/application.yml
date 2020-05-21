@@ -1,45 +1,53 @@
 spring:
-    profiles:
-        active: dev
-    thymeleaf:
-        mode: HTML
-        cache: false
-    mvc:
-        view:
-            prefix: /templates
+  profiles:
+    active: dev
+  thymeleaf:
+    mode: HTML
+    cache: false
+  mvc:
+    view:
+      prefix: /templates
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2KB
+      max-file-size: 200MB
+      max-request-size: 215MB
 
-
-    datasource:
-        url: jdbc:mysql://127.0.0.1:3306/openca?characterEncoding=utf8&useSSL=false
-        username: root
-        password: 123456
-        driver-class-name: com.mysql.cj.jdbc.Driver
-        type: com.zaxxer.hikari.HikariDataSource
-        initialization-mode: always
-        continue-on-error: true
-        hikari:
-            maximum-pool-size: 20
-            minimum-idle: 5
-            connection-test-query: SELECT 1 FROM DUAL
-            auto-commit: true
-            idle-timeout: 30000
-            pool-name: SpringBootDemoHikariCP
-            max-lifetime: 60000
-            connection-timeout: 30000
-    jpa:
-        database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
-        show-sql: true
-        hibernate:
-            ddl-auto: update
-        properties:
-            hibernate:
-                dialect: org.hibernate.dialect.MySQL57InnoDBDialect
-        open-in-view: true
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/openca?characterEncoding=utf8&useSSL=false
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    initialization-mode: always
+    continue-on-error: true
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-test-query: SELECT 1 FROM DUAL
+      auto-commit: true
+      idle-timeout: 30000
+      pool-name: SpringBootDemoHikariCP
+      max-lifetime: 60000
+      connection-timeout: 30000
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL57InnoDBDialect
+    open-in-view: true
 
 logging:
-    level:
-        com.xkcoding: debug
-        org.hibernate.SQL: debug
-        org.hibernate.type: trace
+  level:
+    com.xkcoding: debug
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace
 server:
-    port: 9090
+  port: 9090
+file:
+  upload-dir:
+    ./temp_dir

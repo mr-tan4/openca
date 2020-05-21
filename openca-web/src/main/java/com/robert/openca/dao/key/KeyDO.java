@@ -21,7 +21,7 @@ public class KeyDO {
      * 主键
      */
     @Id
-    @Column(length = 16)
+    @Column(length = 36)
     protected String Id;
 
     /**
@@ -72,6 +72,12 @@ public class KeyDO {
     @CreatedDate
     @Column(nullable = false)
     protected Date not_after;
+
+    /**
+     * 算法提供者
+     */
+    @Column()
+    protected String provider;
 
     public String getId() {
         return Id;
@@ -135,5 +141,13 @@ public class KeyDO {
 
     public void setNot_after(Date not_after) {
         this.not_after = not_after;
+    }
+
+    public String getProvider() {
+        return provider;
+    }
+
+    public void setProvider(String provider) {
+        this.provider = provider;
     }
 }

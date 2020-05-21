@@ -1,6 +1,7 @@
 package com.common.key;
 
 import com.common.algorithm.BcSupportAlgorithm;
+import com.common.provider.Providers;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.security.*;
@@ -19,7 +20,7 @@ public abstract class KeyBuilder {
      * 算法提供者
      * 默认为 bc
      */
-    protected Provider provider = new BouncyCastleProvider();
+    protected String provider = Providers.BC.name();
 
     /**
      * 算法名称
@@ -37,14 +38,14 @@ public abstract class KeyBuilder {
     /**
      * 密钥对配置参数类
      */
-     static class KeyBuilderConfigure{
+    static class KeyBuilderConfigure {
         protected int length = 1024;
-        protected Provider provider;
+        protected String provider;
         protected String algorithm = "RSA";
         protected SecureRandom secureRandom = new SecureRandom();
 
 
-        public KeyBuilderConfigure(){
+        public KeyBuilderConfigure() {
 
         }
 
@@ -56,11 +57,11 @@ public abstract class KeyBuilder {
             this.length = length;
         }
 
-        public Provider getProvider() {
+        public String getProvider() {
             return provider;
         }
 
-        public void setProvider(Provider provider) {
+        public void setProvider(String provider) {
             this.provider = provider;
         }
 

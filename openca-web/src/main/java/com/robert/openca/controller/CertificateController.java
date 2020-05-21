@@ -8,6 +8,7 @@ import com.robert.openca.service.certificate.CertificateDao;
 import com.robert.openca.service.certificate.CertificateRequestDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigInteger;
@@ -22,6 +23,7 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/")
+@EnableSwagger2
 public class CertificateController {
 
     @Autowired

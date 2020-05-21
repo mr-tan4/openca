@@ -17,6 +17,7 @@
     <modules>
         <module>commonlang</module>
         <module>openca-web</module>
+        <module>openca_ca</module>
     </modules>
     <packaging>pom</packaging>
     <properties>

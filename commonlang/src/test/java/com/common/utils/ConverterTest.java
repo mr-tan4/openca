@@ -21,7 +21,7 @@ public class ConverterTest {
         KeyPair keyPair = new KeyPairBuilder()
                 .setAlgorithm("RSA")
                 .setLength(2048)
-                .setProvider(new BouncyCastleProvider())
+                .setProvider("bc")
                 .setSecureRandom(new SecureRandom())
                 .build();
         return keyPair;

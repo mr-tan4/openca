@@ -21,7 +21,7 @@ public class CertificateBuilderTest {
         KeyPair keyPair = new KeyPairBuilder()
                 .setAlgorithm("RSA")
                 .setLength(2048)
-                .setProvider(new BouncyCastleProvider())
+                .setProvider("bc")
                 .setSecureRandom(new SecureRandom())
                 .build();
         PKCS10CertificationRequest pkcs10CertificationRequest = new CertificateRequestBuilder()
