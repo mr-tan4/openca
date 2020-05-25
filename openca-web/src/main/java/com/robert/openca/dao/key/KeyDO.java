@@ -74,6 +74,12 @@ public class KeyDO {
     protected Date not_after;
 
     /**
+     * 是否吊销
+     */
+    @Column
+    protected boolean revoked;
+
+    /**
      * 算法提供者
      */
     @Column()
@@ -149,5 +155,13 @@ public class KeyDO {
 
     public void setProvider(String provider) {
         this.provider = provider;
+    }
+
+    public boolean isRevoked() {
+        return revoked;
+    }
+
+    public void setRevoked(boolean revoked) {
+        this.revoked = revoked;
     }
 }

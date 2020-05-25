@@ -1,5 +1,6 @@
 package com.robert.openca.key;
 
+import com.robert.openca.dao.key.SecretKeyDO;
 import com.robert.openca.key.keypair.KeyPairStrut;
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
@@ -72,7 +73,7 @@ public abstract class KeyGenerator {
     /**
      * 对称密钥生成器
      */
-    protected abstract void generatorSecureKey();
+    protected abstract void generatorSecretKey(SecretKeyDO secretKeyDO);
 
     protected File storeFileName(Key key) {
         if (key instanceof PublicKey) {

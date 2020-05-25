@@ -14,6 +14,8 @@ import org.bouncycastle.pkcs.jcajce.JcaPKCS8EncryptedPrivateKeyInfoBuilder;
 import org.bouncycastle.pkcs.jcajce.JcePKCSPBEOutputEncryptorBuilder;
 import org.bouncycastle.util.encoders.Base64;
 import org.bouncycastle.util.io.pem.PemObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.crypto.*;
 import javax.crypto.spec.PBEKeySpec;
@@ -31,6 +33,8 @@ import java.security.spec.X509EncodedKeySpec;
  * 支持将PEM格式、DER格式文件转换为对象且可以反转
  */
 public class Converter {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Converter.class);
 
     /**
      * 证书对象写出到文件 PEM格式
@@ -319,6 +323,32 @@ public class Converter {
             }
         }
         return null;
+    }
+
+
+    /**
+     * 将对称密钥写出到文件
+     *
+     * @param secretKey        密钥对象
+     * @param fileOutputStream 文件输出流
+     */
+    public static void SecretKey2File(SecretKey secretKey, FileOutputStream fileOutputStream) {
+        try {
+            byte[] bytes = Base64.encode(secretKey.getEncoded());
+            fileOutputStream.write(bytes);
+            fileOutputStream.flush();
+            fileOutputStream.close();
+            LOGGER.info("写出密钥文件成功!");
+        } catch (IOException e) {
+            e.printStackTrace();
+            LOGGER.error("写出密钥文件失败! 原因是 {}", e.getMessage());
+        } finally {
+            try {
+                fileOutputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**

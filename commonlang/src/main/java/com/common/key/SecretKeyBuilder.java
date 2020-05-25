@@ -1,12 +1,12 @@
 package com.common.key;
 
+import com.common.provider.Providers;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
 import java.security.SecureRandom;
 
@@ -17,9 +17,9 @@ import java.security.SecureRandom;
  * @version 1.0
  * @since 2020-05-25
  */
-public class SecureKeyBuilder {
+public class SecretKeyBuilder {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SecureKeyBuilder.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SecretKeyBuilder.class);
 
     /**
      * 密钥算法
@@ -35,7 +35,7 @@ public class SecureKeyBuilder {
      * 算法提供者
      * 默认为 BC
      */
-    private Provider provider = new BouncyCastleProvider();
+    private String provider = "BC";
 
     /**
      * 随机数产生器
@@ -43,27 +43,27 @@ public class SecureKeyBuilder {
      */
     private SecureRandom secureRandom = new SecureRandom();
 
-    public SecureKeyBuilder setAlgorithm(String algorithm) {
+    public SecretKeyBuilder setAlgorithm(String algorithm) {
         this.algorithm = algorithm;
         return this;
     }
 
-    public SecureKeyBuilder setLength(int length) {
+    public SecretKeyBuilder setLength(int length) {
         this.length = length;
         return this;
     }
 
-    public SecureKeyBuilder setProvider(Provider provider) {
+    public SecretKeyBuilder setProvider(String provider) {
         this.provider = provider;
         return this;
     }
 
-    public SecureKeyBuilder setSecureRandom(SecureRandom secureRandom) {
+    public SecretKeyBuilder setSecureRandom(SecureRandom secureRandom) {
         this.secureRandom = secureRandom;
         return this;
     }
 
-    public SecureKeyBuilder setConfiguration(SecureKeyBuilderConfiguration secureKeyBuilderConfiguration) {
+    public SecretKeyBuilder setConfiguration(SecureKeyBuilderConfiguration secureKeyBuilderConfiguration) {
         this.algorithm = secureKeyBuilderConfiguration.getAlgorithm();
         this.length = secureKeyBuilderConfiguration.getLength();
         this.provider = secureKeyBuilderConfiguration.getProvider();
@@ -73,10 +73,10 @@ public class SecureKeyBuilder {
 
     public SecretKey build() {
         try {
-            KeyGenerator keyGenerator = KeyGenerator.getInstance(algorithm, provider);
+            KeyGenerator keyGenerator = KeyGenerator.getInstance(algorithm, Providers.getProviderOfName(provider));
             keyGenerator.init(length, secureRandom);
             LOGGER.info("创建对称密钥");
-            LOGGER.info("密钥算法为: {},算法提供者为: {}", algorithm, provider.getName());
+            LOGGER.info("密钥算法为: {},算法提供者为: {}", algorithm, provider);
             LOGGER.info("密钥长度为: {}", length);
             return keyGenerator.generateKey();
         } catch (Exception e) {
@@ -101,7 +101,7 @@ public class SecureKeyBuilder {
         /**
          * 算法提供者
          */
-        private Provider provider = new BouncyCastleProvider();
+        private String provider = "BC";
         /**
          * 随机数产生器
          */
@@ -123,11 +123,11 @@ public class SecureKeyBuilder {
             this.length = length;
         }
 
-        public Provider getProvider() {
+        public String getProvider() {
             return provider;
         }
 
-        public void setProvider(Provider provider) {
+        public void setProvider(String provider) {
             this.provider = provider;
         }
 

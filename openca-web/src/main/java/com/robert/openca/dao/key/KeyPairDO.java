@@ -15,7 +15,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "KEY_PAIR_INFO")
-public class KeyPairDO {
+public class KeyPairDO implements Cloneable {
 
     /**
      * 主键
@@ -46,6 +46,18 @@ public class KeyPairDO {
      */
     @Column(nullable = false)
     private String certificate_request_id;
+
+    /**
+     * 是否吊销
+     */
+    @Column
+    private boolean revoked;
+
+    /**
+     * 是否为备份数据
+     */
+    @Column
+    private boolean backup;
 
     public String getID() {
         return ID;
@@ -85,5 +97,25 @@ public class KeyPairDO {
 
     public void setCertificate_request_id(String certificate_request_id) {
         this.certificate_request_id = certificate_request_id;
+    }
+
+    public boolean isRevoked() {
+        return revoked;
+    }
+
+    public void setRevoked(boolean revoked) {
+        this.revoked = revoked;
+    }
+
+    public boolean isBackup() {
+        return backup;
+    }
+
+    public void setBackup(boolean backup) {
+        this.backup = backup;
+    }
+
+    public KeyPairDO clone() throws CloneNotSupportedException {
+        return (KeyPairDO) super.clone();
     }
 }

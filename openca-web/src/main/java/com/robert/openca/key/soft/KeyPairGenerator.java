@@ -3,6 +3,7 @@ package com.robert.openca.key.soft;
 import com.common.key.KeyPairBuilder;
 import com.common.utils.Converter;
 
+import com.robert.openca.dao.key.SecretKeyDO;
 import com.robert.openca.key.KeyGenerator;
 import com.robert.openca.key.keypair.KeyPairStrut;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +40,7 @@ public class KeyPairGenerator extends KeyGenerator {
     }
 
     @Override
-    public void generatorSecureKey() {
+    public void generatorSecretKey(SecretKeyDO secretKeyDO) {
     }
 
 

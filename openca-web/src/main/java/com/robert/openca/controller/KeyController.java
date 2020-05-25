@@ -4,22 +4,23 @@ import com.robert.openca.constant.UUIDUtil;
 import com.robert.openca.dao.key.KeyPairDO;
 import com.robert.openca.dao.key.PrivateKeyDO;
 import com.robert.openca.dao.key.PublicKeyDO;
-import com.robert.openca.dao.key.SecureKeyDO;
+import com.robert.openca.dao.key.SecretKeyDO;
 import com.robert.openca.key.keypair.KeyPairStrut;
 import com.robert.openca.key.soft.KeyPairGenerator;
+import com.robert.openca.key.soft.SecretKeyGenerator;
 import com.robert.openca.service.key.KeyPairDao;
 import com.robert.openca.service.key.PrivateKeyDao;
 import com.robert.openca.service.key.PublicKeyDao;
-import com.robert.openca.service.key.SecureKeyDao;
+import com.robert.openca.service.key.SecretKeyDao;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 
 /**
@@ -45,14 +46,14 @@ public class KeyController {
     private PrivateKeyDao privateKeyDao;
 
     @Autowired
-    private SecureKeyDao secureKeyDao;
+    private SecretKeyDao secretKeyDao;
 
     /**
      * 创建密钥对
      *
      * @param keyPairStrut json格式的请求文件
      */
-    @ApiOperation(value = "生成密钥对", notes="生成密钥对")
+    @ApiOperation(value = "生成密钥对", notes = "生成密钥对")
     @PostMapping("/create/KeyPair")
     public void createKeyPair(@RequestBody @NotNull KeyPairStrut keyPairStrut) {
         PrivateKeyDO privateKeyDO = keyPairStrut.getPrivateKeyDO();
@@ -61,7 +62,6 @@ public class KeyController {
             new KeyPairGenerator().generatorKeyPair(keyPairStrut);
             privateKeyDO.setId(UUIDUtil.get());
             publicKeyDO.setId(UUIDUtil.get());
-            System.out.println(UUIDUtil.get().length());
             privateKeyDao.save(privateKeyDO);
             publicKeyDao.save(publicKeyDO);
             KeyPairDO keyPairDO = new KeyPairDO();
@@ -70,6 +70,7 @@ public class KeyController {
             keyPairDO.setPrivate_key_id(privateKeyDO.getId());
             keyPairDO.setCertificate_id(UUIDUtil.get());
             keyPairDO.setCertificate_request_id(UUIDUtil.get());
+            keyPairDO.setBackup(false);
             keyPairDao.save(keyPairDO);
             log.info("创建密钥对成功!");
         } catch (Exception e) {
@@ -80,11 +81,20 @@ public class KeyController {
     /**
      * 创建对称密钥
      *
-     * @param secureKeyDO
+     * @param secretKeyDO
      */
     @PostMapping("/create/SecureKey")
-    public void createSecureKey(@RequestBody @NotNull SecureKeyDO secureKeyDO) {
-        secureKeyDao.save(secureKeyDO);
+    public void createSecureKey(@RequestBody @NotNull SecretKeyDO secretKeyDO) {
+        try {
+            new SecretKeyGenerator().generatorSecretKey(secretKeyDO);
+            secretKeyDO.setId(UUIDUtil.get());
+            secretKeyDO.setBackup(false);
+            secretKeyDao.save(secretKeyDO);
+            log.error("生成密钥成功!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("生成密钥失败!");
+        }
     }
 
     /**
@@ -94,7 +104,15 @@ public class KeyController {
      */
     @GetMapping("/revoke/KeyPair")
     public void revokeKeyPair(@RequestParam("id") @NotNull String id) {
-        keyPairDao.deleteById(null);
+        KeyPairDO keyPairDO = keyPairDao.getOne(id);
+        PublicKeyDO publicKeyDO = publicKeyDao.getOne(keyPairDO.getPublic_key_id());
+        PrivateKeyDO privateKeyDO = privateKeyDao.getOne(keyPairDO.getPrivate_key_id());
+        publicKeyDO.setRevoked(true);
+        privateKeyDO.setRevoked(true);
+        keyPairDO.setRevoked(false);
+        publicKeyDao.save(publicKeyDO);
+        privateKeyDao.save(privateKeyDO);
+        keyPairDao.save(keyPairDO);
     }
 
     /**
@@ -104,7 +122,9 @@ public class KeyController {
      */
     @GetMapping("/revoke/SecureKey")
     public void revokeSecureKey(@RequestParam("id") @NotNull String id) {
-        secureKeyDao.save(null);
+        SecretKeyDO secretKeyDO = secretKeyDao.getOne(id);
+        secretKeyDO.setRevoked(true);
+        secretKeyDao.save(secretKeyDO);
     }
 
     /**
@@ -114,6 +134,9 @@ public class KeyController {
      */
     @GetMapping("/destroy/KeyPair")
     public void destroyKeyPair(@RequestParam("id") @NotNull String id) {
+        KeyPairDO keyPairDO = keyPairDao.getOne(id);
+        publicKeyDao.deleteById(keyPairDO.getPublic_key_id());
+        privateKeyDao.deleteById(keyPairDO.getPrivate_key_id());
         keyPairDao.deleteById(id);
     }
 
@@ -123,7 +146,7 @@ public class KeyController {
 
     @GetMapping("/destroy/SecureKey")
     public void destroySecureKey(@RequestParam("id") @NotNull String id) {
-        secureKeyDao.deleteById(id);
+        secretKeyDao.deleteById(id);
     }
 
     /**
@@ -152,8 +175,12 @@ public class KeyController {
      * @param id
      */
     @GetMapping("backup/KeyPair")
-    public void backUpKeyPair(@RequestParam("id") @NotNull String id) {
-        keyPairDao.save(null);
+    public void backUpKeyPair(@RequestParam("id") @NotNull String id) throws CloneNotSupportedException {
+        KeyPairDO keyPairDO = keyPairDao.getOne(id);
+        KeyPairDO var = keyPairDO.clone();
+        var.setID(UUIDUtil.get());
+        var.setBackup(true);
+        keyPairDao.save(var);
     }
 
     /**
@@ -163,6 +190,9 @@ public class KeyController {
      */
     @GetMapping("backup/SecureKey")
     public void backUpSecureKey(@RequestParam("id") @NotNull String id) {
-        secureKeyDao.save(null);
+        SecretKeyDO secretKeyDO = secretKeyDao.getOne(id);
+        secretKeyDO.setId(UUIDUtil.get());
+        secretKeyDO.setBackup(true);
+        secretKeyDao.save(secretKeyDO);
     }
 }
