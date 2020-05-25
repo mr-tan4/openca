@@ -12,13 +12,12 @@ import org.bouncycastle.pkcs.PKCS8EncryptedPrivateKeyInfo;
 import org.bouncycastle.pkcs.PKCS8EncryptedPrivateKeyInfoBuilder;
 import org.bouncycastle.pkcs.jcajce.JcaPKCS8EncryptedPrivateKeyInfoBuilder;
 import org.bouncycastle.pkcs.jcajce.JcePKCSPBEOutputEncryptorBuilder;
+import org.bouncycastle.util.encoders.Base64;
 import org.bouncycastle.util.io.pem.PemObject;
 
-import javax.crypto.Cipher;
-import javax.crypto.EncryptedPrivateKeyInfo;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKeyFactory;
+import javax.crypto.*;
 import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.security.*;
 import java.security.cert.CertificateException;
@@ -291,6 +290,68 @@ public class Converter {
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * 将对称密钥文件转换为对象
+     *
+     * @param stream    文件流
+     * @param algorithm 算法
+     */
+    public static SecretKey SecureKeyFile2SecureKey(FileInputStream stream, String algorithm, Provider provider) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        try {
+            byte[] bytes = new byte[2048];
+
+            int length;
+            while ((length = stream.read(bytes)) != -1) {
+                byteArrayOutputStream.write(bytes, 0, length);
+            }
+            return Object2SecureKey(Base64.decode(byteArrayOutputStream.toString()), algorithm, provider);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                stream.close();
+                byteArrayOutputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 将字符串转化为密钥对象
+     *
+     * @param var1      字符串
+     * @param algorithm 算法
+     * @return
+     */
+    public static SecretKey String2SecureKey(String var1, String algorithm, Provider provider) {
+        byte[] bytes = Base64.decode(var1);
+        return Object2SecureKey(bytes, algorithm, provider);
+    }
+
+    /**
+     * 将二进制数据转换为密钥对象
+     *
+     * @param var1
+     * @param algorithm
+     * @param provider
+     * @return
+     */
+    private static SecretKey Object2SecureKey(byte[] var1, String algorithm, Provider provider) {
+        try {
+            SecretKeySpec secretKeySpec = new SecretKeySpec(var1, algorithm);
+            SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance(algorithm, provider);
+            return secretKeyFactory.generateSecret(secretKeySpec);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeySpecException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

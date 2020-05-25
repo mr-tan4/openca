@@ -31,8 +31,7 @@ import javax.validation.constraints.NotNull;
  */
 
 @Api()
-@Controller("key")
-@RequestMapping("/key")
+@RestController()
 @Slf4j
 public class KeyController {
 

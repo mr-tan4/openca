@@ -9,6 +9,7 @@ import net.lingala.zip4j.model.enums.CompressionLevel;
 import net.lingala.zip4j.model.enums.CompressionMethod;
 import net.lingala.zip4j.model.enums.EncryptionMethod;
 
+import javax.crypto.SecretKey;
 import java.io.File;
 import java.security.Key;
 import java.security.PrivateKey;
@@ -29,11 +30,11 @@ public abstract class KeyGenerator {
     /**
      * 公钥文件开头
      */
-    private static final String PUBLIC_KEY_FILE_HEADER = "/PublicKey_";
+    private static final String PUBLIC_KEY_FILE_HEADER = "/Users/robert/PublicKey_";
     /**
      * 私钥文件开头
      */
-    private static final String PRIVATE_KEY_FILE_HEADER = "/PrivateKey_";
+    private static final String PRIVATE_KEY_FILE_HEADER = "/Users/robert/PrivateKey_";
     /**
      * 公钥文件结尾
      */
@@ -46,12 +47,22 @@ public abstract class KeyGenerator {
     /**
      * zip文件开头
      */
-    private static final String ZIP_FILE_HEADER = "/" + SimpleDateFormat.getDateInstance().format(new Date());
+    private static final String ZIP_FILE_HEADER = "/Users/robert/" + SimpleDateFormat.getDateInstance().format(new Date());
 
     /**
      * zip文件结尾
      */
     private static final String ZIP_FILE_END = ".zip";
+
+    /**
+     * 对称密钥文件开头
+     */
+    private static final String KEY_FILE_HEADER = "/Users/robert/Key_";
+
+    /**
+     * 对称密钥文件结尾
+     */
+    private static final String KEY_FILE_END = ".key";
 
     /**
      * 密钥对生成器
@@ -68,6 +79,8 @@ public abstract class KeyGenerator {
             return new File(PUBLIC_KEY_FILE_HEADER + "test" + PUBLIC_KEY_FILE_END);
         } else if (key instanceof PrivateKey) {
             return new File(PRIVATE_KEY_FILE_HEADER + "test" + PRIVATE_KEY_FILE_END);
+        } else if (key instanceof SecretKey) {
+            return new File(KEY_FILE_HEADER + "test" + KEY_FILE_END);
         }
         return null;
     }

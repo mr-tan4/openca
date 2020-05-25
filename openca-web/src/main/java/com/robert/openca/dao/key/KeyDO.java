@@ -21,7 +21,7 @@ public class KeyDO {
      * 主键
      */
     @Id
-    @Column(length = 36)
+    @Column(length = 40)
     protected String Id;
 
     /**
