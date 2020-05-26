@@ -3,6 +3,7 @@ package com.robert.openca.controller;
 
 import com.robert.openca.dao.certificate.CertificateInfoDO;
 import com.robert.openca.dao.certificate.CertificateRequestDO;
+import com.robert.openca.ra.CreatePKCS10CertificateRequest;
 import com.robert.openca.service.certificate.CertificateDao;
 
 import com.robert.openca.service.certificate.CertificateRequestDao;
@@ -76,6 +77,7 @@ public class CertificateController {
      */
     @PostMapping("create/certificate/request")
     public void create(@RequestBody @NotNull CertificateRequestDO certificateRequestDO) {
+        new CreatePKCS10CertificateRequest().generatorRequestFromPEM(certificateRequestDO);
         certificateRequestDao.save(certificateRequestDO);
     }
 }

@@ -12,6 +12,24 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "CERTIFICATE_REQUEST_INFO")
-public class CertificateRequestDO extends BasicDO{
+public class CertificateRequestDO extends BasicDO {
+
+    public String getSubject() {
+        return new StringBuilder()
+                .append("C=")
+                .append(CountyCode)
+                .append(",ST=")
+                .append(State)
+                .append(",L=")
+                .append(Location)
+                .append(",O=")
+                .append(Organization)
+                .append(",OU=")
+                .append(OrganizationUnit)
+                .append("CN=")
+                .append(CommonName)
+                .toString();
+
+    }
 
 }

@@ -17,6 +17,12 @@ public class PrivateKeyDO extends KeyDO {
     @Column(length = 6)
     private String password;
 
+    /**
+     * 加密后的私钥密文
+     */
+    @Column(columnDefinition = "text")
+    private String privateKeyContext;
+
     public String getPassword() {
         return password;
     }

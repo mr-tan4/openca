@@ -55,7 +55,7 @@ public class KeyController {
      */
     @ApiOperation(value = "生成密钥对", notes = "生成密钥对")
     @PostMapping("/create/KeyPair")
-    public void createKeyPair(@RequestBody @NotNull KeyPairStrut keyPairStrut) {
+    public void createKeyPair(@RequestBody @NotNull KeyPairStrut keyPairStrut) throws Exception {
         PrivateKeyDO privateKeyDO = keyPairStrut.getPrivateKeyDO();
         PublicKeyDO publicKeyDO = keyPairStrut.getPublicKeyDO();
         try {
@@ -74,7 +74,7 @@ public class KeyController {
             keyPairDao.save(keyPairDO);
             log.info("创建密钥对成功!");
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new Exception(e);
         }
     }
 

@@ -35,6 +35,14 @@ import java.security.spec.X509EncodedKeySpec;
 public class Converter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Converter.class);
+    /**
+     * 公钥开头
+     */
+    private static final String BEGIN_PUBLIC_KEY = "-----BEGIN PUBLIC KEY-----\n";
+    /**
+     * 公钥结尾
+     */
+    private static final String END_PUBLIC_KEY = "-----END PUBLIC KEY-----";
 
     /**
      * 证书对象写出到文件 PEM格式
@@ -197,7 +205,8 @@ public class Converter {
         PEMParser pemParser = new PEMParser(new InputStreamReader(stream));
         try {
             PemObject pemObject = pemParser.readPemObject();
-            PKCS10CertificationRequest pkcs10CertificationRequest = new PKCS10CertificationRequest(pemObject.getContent());
+            PKCS10CertificationRequest pkcs10CertificationRequest = new PKCS10CertificationRequest(
+                    pemObject.getContent());
             pemParser.close();
             return pkcs10CertificationRequest;
         } catch (IOException e) {
@@ -238,7 +247,8 @@ public class Converter {
      * @param password
      * @return
      */
-    public static PrivateKey EncryptionPrivateKeyFile2PrivateKey(FileInputStream stream, String algorithm, String password) {
+    public static PrivateKey EncryptionPrivateKeyFile2PrivateKey(FileInputStream stream, String algorithm,
+                                                                 String password) {
         PEMParser pemParser = new PEMParser(new InputStreamReader(stream));
         try {
             PemObject pemObject = pemParser.readPemObject();
@@ -247,7 +257,8 @@ public class Converter {
             SecretKeyFactory factory = SecretKeyFactory.getInstance(encryptedPrivateKeyInfo.getAlgName(),
                     new BouncyCastleProvider());
             Cipher cipher = Cipher.getInstance(encryptedPrivateKeyInfo.getAlgName(), new BouncyCastleProvider());
-            cipher.init(Cipher.DECRYPT_MODE, factory.generateSecret(keySpec), encryptedPrivateKeyInfo.getAlgParameters());
+            cipher.init(Cipher.DECRYPT_MODE, factory.generateSecret(keySpec),
+                    encryptedPrivateKeyInfo.getAlgParameters());
             KeyFactory keyFactory = KeyFactory.getInstance(algorithm);
             pemParser.close();
             return keyFactory.generatePrivate(encryptedPrivateKeyInfo.getKeySpec(cipher));
@@ -380,6 +391,107 @@ public class Converter {
             e.printStackTrace();
         } catch (InvalidKeySpecException e) {
             e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 将公钥转换为String
+     *
+     * @param publicKey 公钥对象
+     * @return 字符串
+     */
+    public static String PublicKey2String(PublicKey publicKey) {
+        String text = Base64.toBase64String(publicKey.getEncoded());
+        int count = text.length() % 64;
+        if (count != 0) {
+            count += 1;
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(BEGIN_PUBLIC_KEY);
+        for (int i = 0; i < count; i++) {
+            if (i == count - 1) {
+                stringBuilder.append(text.substring(i * 64, text.length() - 1));
+            } else {
+                stringBuilder.append(text.substring(i * 64, (i + 1) * 64));
+                stringBuilder.append("\n");
+            }
+        }
+        stringBuilder.append(END_PUBLIC_KEY);
+        return stringBuilder.toString();
+    }
+
+    /**
+     * 将私钥转换成String
+     *
+     * @param privateKey 私钥对象
+     * @return 字符串
+     */
+    public static String PrivateKey2String(PrivateKey privateKey) {
+        String text = Base64.toBase64String(privateKey.getEncoded());
+        int count = text.length() % 64;
+        if (count != 0) {
+            count += 1;
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("-----BEGIN ");
+        stringBuilder.append(privateKey.getAlgorithm());
+        stringBuilder.append(" PRIVATE KEY-----\n");
+        for (int i = 0; i < count; i++) {
+            if (i == count - 1) {
+                stringBuilder.append(text.substring(i * 64, text.length() - 1));
+            } else {
+                stringBuilder.append(text.substring(i * 64, (i + 1) * 64));
+                stringBuilder.append("\n");
+            }
+        }
+        stringBuilder.append("-----END ");
+        stringBuilder.append(privateKey.getAlgorithm());
+        stringBuilder.append(" PRIVATE KEY-----");
+        return stringBuilder.toString();
+    }
+
+
+    public static PublicKey String2PublicKey(String var, String algorithm) {
+        PEMParser pemParser = new PEMParser(new StringReader(var));
+        try {
+            PemObject pemObject = pemParser.readPemObject();
+            X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(pemObject.getContent());
+            KeyFactory keyFactory = KeyFactory.getInstance(algorithm, new BouncyCastleProvider());
+            pemParser.close();
+            return keyFactory.generatePublic(x509EncodedKeySpec);
+        } catch (InvalidKeySpecException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                pemParser.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    public static PrivateKey String2PrivateKey(String var, String algorithm) {
+        PEMParser pemParser = new PEMParser(new StringReader(var));
+        try {
+            PemObject pemObject = pemParser.readPemObject();
+            PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(pemObject.getContent());
+            KeyFactory factory = KeyFactory.getInstance(algorithm, new BouncyCastleProvider());
+            pemParser.close();
+            return factory.generatePrivate(pkcs8EncodedKeySpec);
+        } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                pemParser.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return null;
     }

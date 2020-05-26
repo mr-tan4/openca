@@ -6,9 +6,10 @@ import javax.persistence.MappedSuperclass;
 
 /**
  * 基本信息 会被复用
+ *
  * @author robert
- * @since 2020-05-19
  * @version 1.0
+ * @since 2020-05-19
  */
 
 @MappedSuperclass
@@ -53,13 +54,13 @@ public class BasicDO {
     /**
      * 通用名称/域名
      */
-    @Column(length = 255,nullable = false)
+    @Column(length = 255, nullable = false)
     protected String CommonName;
 
     /**
      * 签名算法
      */
-    @Column(length = 255,nullable = false)
+    @Column(length = 255, nullable = false)
     protected String SignAlgorithm = "SHA256WithRSA";
 
     /**
@@ -73,6 +74,12 @@ public class BasicDO {
      */
     @Column(length = 16)
     protected String PrivateKeyID;
+
+    /**
+     * 算法提供者
+     */
+    @Column
+    protected String Provider;
 
     public String getID() {
         return ID;
@@ -152,5 +159,13 @@ public class BasicDO {
 
     public void setPrivateKeyID(String privateKeyID) {
         PrivateKeyID = privateKeyID;
+    }
+
+    public String getProvider() {
+        return Provider;
+    }
+
+    public void setProvider(String provider) {
+        Provider = provider;
     }
 }

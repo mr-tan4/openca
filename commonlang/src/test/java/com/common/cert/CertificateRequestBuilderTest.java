@@ -23,7 +23,7 @@ public class CertificateRequestBuilderTest {
                 .setSubject("C=CN,O=nanjing,OU=koal,CN=robert")
                 .setPublicKey(keyPair.getPublic())
                 .setPrivateKey(keyPair.getPrivate())
-                .setProvider(new BouncyCastleProvider())
+                .setProvider("BC")
                 .build();
     }
 }

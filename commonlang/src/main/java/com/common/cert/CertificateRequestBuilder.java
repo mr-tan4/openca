@@ -1,6 +1,7 @@
 package com.common.cert;
 
 import com.common.algorithm.BcSupportAlgorithm;
+import com.common.provider.Providers;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
@@ -38,7 +39,7 @@ public class CertificateRequestBuilder {
      * 算法提供者
      * 默认为 BC
      */
-    private Provider provider = new BouncyCastleProvider();
+    private String provider = "BC";
 
     /**
      * 证书使用对象
@@ -65,7 +66,7 @@ public class CertificateRequestBuilder {
         return this;
     }
 
-    public CertificateRequestBuilder setProvider(Provider provider) {
+    public CertificateRequestBuilder setProvider(String provider) {
         this.provider = provider;
         return this;
     }
@@ -103,11 +104,11 @@ public class CertificateRequestBuilder {
         try {
             LOGGER.info("签名算法: {}",signAlgorithm);
             ContentSigner contentSigner = new JcaContentSignerBuilder(signAlgorithm)
-                    .setProvider(provider)
+                    .setProvider(Providers.getProviderOfName(provider))
                     .setSecureRandom(secureRandom)
                     .build(privateKey);
             LOGGER.info("创建签名器 算法为: {},算法提供者为: {},随机数产生器算法为: {},随机数产生器算法提供者为: {}",
-                    signAlgorithm, provider.getName(), secureRandom.getAlgorithm(), secureRandom.getProvider().getName());
+                    signAlgorithm, provider, secureRandom.getAlgorithm(), secureRandom.getProvider().getName());
             PKCS10CertificationRequest pkcs10CertificationRequest = new JcaPKCS10CertificationRequestBuilder(
                     generatorX500Name(), publicKey)
                     .build(contentSigner);

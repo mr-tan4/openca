@@ -28,7 +28,7 @@ public class CertificateBuilderTest {
                 .setSubject("C=CN,L=nanjing,O=koal,OU=develop,CN=robert")
                 .setPublicKey(keyPair.getPublic())
                 .setPrivateKey(keyPair.getPrivate())
-                .setProvider(new BouncyCastleProvider())
+                .setProvider("BC")
                 .build();
         try {
             X509Certificate signCertificate = Converter.file2Cert(new FileInputStream("/Users/robert/client.crt"));
