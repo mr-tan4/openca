@@ -6,10 +6,8 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.crypto.*;
 import javax.crypto.spec.PBEKeySpec;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.Security;
+import javax.crypto.spec.PBEParameterSpec;
+import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 
 /**
@@ -38,6 +36,18 @@ public final class EncryptedPrivateKey {
     private static final String PADDING_ALGORITHM = "/CBC/PKCS5Padding";
 
     /**
+     * iv
+     */
+    private final static int SALT_COUNT = 100;
+
+    public static byte[] init() {
+        byte[] salt = new byte[8];
+        SecureRandom secureRandom = new SecureRandom();
+        secureRandom.nextBytes(salt);
+        return salt;
+    }
+
+    /**
      * 密钥产生器
      *
      * @param password 密码
@@ -61,11 +71,12 @@ public final class EncryptedPrivateKey {
      * @param password  密码
      * @return 密文
      */
-    public static String encryption(@NotNull String plaintext, @NotNull String password) {
+    public static String encryption(@NotNull String plaintext, @NotNull String password, @NotNull byte[] salt) {
         try {
             SecretKey secretKey = generatorKey(password);
+            PBEParameterSpec pbeParameterSpec = new PBEParameterSpec(salt, SALT_COUNT);
             Cipher cipher = Cipher.getInstance(ALGORITHM + PADDING_ALGORITHM, "BC");
-            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey, pbeParameterSpec);
             byte[] bytes = cipher.doFinal(Base64.decode(plaintext));
             return Base64.toBase64String(bytes);
         } catch (NoSuchAlgorithmException e) {
@@ -80,6 +91,8 @@ public final class EncryptedPrivateKey {
             e.printStackTrace();
         } catch (IllegalBlockSizeException e) {
             e.printStackTrace();
+        } catch (InvalidAlgorithmParameterException e) {
+            e.printStackTrace();
         }
         return null;
     }
@@ -91,11 +104,12 @@ public final class EncryptedPrivateKey {
      * @param password   密码
      * @return 明文
      */
-    public static String decryption(@NotNull String ciphertext, @NotNull String password) {
+    public static String decryption(@NotNull String ciphertext, @NotNull String password, @NotNull byte[] salt) {
         try {
             SecretKey secretKey = generatorKey(password);
+            PBEParameterSpec pbeParameterSpec = new PBEParameterSpec(salt, SALT_COUNT);
             Cipher cipher = Cipher.getInstance(ALGORITHM + PADDING_ALGORITHM, "BC");
-            cipher.init(Cipher.DECRYPT_MODE, secretKey);
+            cipher.init(Cipher.DECRYPT_MODE, secretKey, pbeParameterSpec);
             byte[] bytes = cipher.doFinal(Base64.decode(ciphertext));
             return Base64.toBase64String(bytes);
         } catch (NoSuchAlgorithmException e) {
@@ -109,6 +123,8 @@ public final class EncryptedPrivateKey {
         } catch (IllegalBlockSizeException e) {
             e.printStackTrace();
         } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (InvalidAlgorithmParameterException e) {
             e.printStackTrace();
         }
         return null;

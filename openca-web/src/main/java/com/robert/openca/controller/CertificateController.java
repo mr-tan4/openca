@@ -78,6 +78,7 @@ public class CertificateController {
     @PostMapping("create/certificate/request")
     public void create(@RequestBody @NotNull CertificateRequestDO certificateRequestDO) {
         new CreatePKCS10CertificateRequest().generatorRequestFromPEM(certificateRequestDO);
+        certificateRequestDO.setID("");
         certificateRequestDao.save(certificateRequestDO);
     }
 }

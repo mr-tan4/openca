@@ -11,7 +11,7 @@ public class PublicKeyDO extends KeyDO {
     /**
      * 公钥内容
      */
-    @Column(columnDefinition = "text")
+    @Column(columnDefinition = "mediumtext")
     private String publicKeyContext;
 
     public String getPublicKeyContext() {

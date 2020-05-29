@@ -405,13 +405,16 @@ public class Converter {
         String text = Base64.toBase64String(publicKey.getEncoded());
         int count = text.length() % 64;
         if (count != 0) {
-            count += 1;
+            count = (text.length() / 64) + 1;
+        } else {
+            count = text.length() / 64;
         }
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(BEGIN_PUBLIC_KEY);
         for (int i = 0; i < count; i++) {
             if (i == count - 1) {
                 stringBuilder.append(text.substring(i * 64, text.length() - 1));
+                stringBuilder.append("\n");
             } else {
                 stringBuilder.append(text.substring(i * 64, (i + 1) * 64));
                 stringBuilder.append("\n");
