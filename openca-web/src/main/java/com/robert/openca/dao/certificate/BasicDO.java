@@ -64,16 +64,10 @@ public class BasicDO {
     protected String SignAlgorithm = "SHA256WithRSA";
 
     /**
-     * 公钥ID
+     * 密钥对ID
      */
-    @Column(length = 16)
-    protected String PublicKeyID;
-
-    /**
-     * 私钥ID
-     */
-    @Column(length = 16)
-    protected String PrivateKeyID;
+    @Column(length = 40)
+    protected String KeyPairID;
 
     /**
      * 算法提供者
@@ -145,20 +139,12 @@ public class BasicDO {
         SignAlgorithm = signAlgorithm;
     }
 
-    public String getPublicKeyID() {
-        return PublicKeyID;
+    public String getKeyPairID() {
+        return KeyPairID;
     }
 
-    public void setPublicKeyID(String publicKeyID) {
-        PublicKeyID = publicKeyID;
-    }
-
-    public String getPrivateKeyID() {
-        return PrivateKeyID;
-    }
-
-    public void setPrivateKeyID(String privateKeyID) {
-        PrivateKeyID = privateKeyID;
+    public void setKeyPairID(String keyPairID) {
+        KeyPairID = keyPairID;
     }
 
     public String getProvider() {

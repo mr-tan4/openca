@@ -67,8 +67,6 @@ public class KeyController {
             keyPairDO.setID(UUIDUtil.get());
             keyPairDO.setPublic_key_id(publicKeyDO.getId());
             keyPairDO.setPrivate_key_id(privateKeyDO.getId());
-            keyPairDO.setCertificate_id(UUIDUtil.get());
-            keyPairDO.setCertificate_request_id(UUIDUtil.get());
             keyPairDO.setBackup(false);
             keyPairDao.save(keyPairDO);
             log.info("创建密钥对成功!");

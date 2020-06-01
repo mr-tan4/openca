@@ -1,6 +1,8 @@
 package com.common.utils;
 
+import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
+import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -401,8 +403,8 @@ public class Converter {
      * @param publicKey 公钥对象
      * @return 字符串
      */
-    public static String PublicKey2String(PublicKey publicKey) {
-        String text = Base64.toBase64String(publicKey.getEncoded());
+    public static String PublicKey2String(PublicKey publicKey) throws IOException {
+        String text = Base64.toBase64String(SubjectPublicKeyInfo.getInstance(publicKey.getEncoded()).getEncoded());
         int count = text.length() % 64;
         if (count != 0) {
             count = (text.length() / 64) + 1;
@@ -461,7 +463,6 @@ public class Converter {
             PemObject pemObject = pemParser.readPemObject();
             X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(pemObject.getContent());
             KeyFactory keyFactory = KeyFactory.getInstance(algorithm, new BouncyCastleProvider());
-            pemParser.close();
             return keyFactory.generatePublic(x509EncodedKeySpec);
         } catch (InvalidKeySpecException e) {
             e.printStackTrace();

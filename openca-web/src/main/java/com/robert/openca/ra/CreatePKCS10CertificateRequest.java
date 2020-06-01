@@ -4,21 +4,29 @@ import com.common.cert.CertificateRequestBuilder;
 import com.common.utils.Converter;
 import com.common.utils.EncryptedPrivateKey;
 import com.robert.openca.dao.certificate.CertificateRequestDO;
+import com.robert.openca.dao.key.KeyPairDO;
 import com.robert.openca.dao.key.PrivateKeyDO;
 import com.robert.openca.dao.key.PublicKeyDO;
+import com.robert.openca.service.key.KeyPairDao;
 import com.robert.openca.service.key.PrivateKeyDao;
 import com.robert.openca.service.key.PublicKeyDao;
+import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 import org.bouncycastle.util.encoders.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.io.FileOutputStream;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.util.Optional;
 
 /**
  * 制作PKCS10 证书请求文件
  */
+@Slf4j
+@Component
 public class CreatePKCS10CertificateRequest {
     private static final String REQUEST_FILE_HEADER = "/Users/robert/Request_";
     private static final String REQUEST_FILE_END = ".csr";
@@ -29,6 +37,9 @@ public class CreatePKCS10CertificateRequest {
     @Autowired
     private PrivateKeyDao privateKeyDao;
 
+    @Autowired
+    private KeyPairDao keyPairDao;
+
 
     /**
      * 写出为PEM格式文件
@@ -38,19 +49,21 @@ public class CreatePKCS10CertificateRequest {
      */
     public void generatorRequestFromPEM(CertificateRequestDO certificateRequestDO) {
         try {
-            PrivateKeyDO privateKeyDO = privateKeyDao.getOne(certificateRequestDO.getPrivateKeyID());
-            PublicKeyDO publicKeyDO = publicKeyDao.getOne(certificateRequestDO.getPublicKeyID());
+            Optional<KeyPairDO> keyPairDO = keyPairDao.findById(certificateRequestDO.getKeyPairID());
+            log.info(certificateRequestDO.getKeyPairID());
+            Optional<PrivateKeyDO> privateKeyDO = privateKeyDao.findById(keyPairDO.get().getPrivate_key_id());
+            Optional<PublicKeyDO> publicKeyDO = publicKeyDao.findById(keyPairDO.get().getPublic_key_id());
             PKCS10CertificationRequest certificationRequest = new CertificateRequestBuilder()
                     .setSubject(certificateRequestDO.getSubject())
                     .setSignAlgorithm(certificateRequestDO.getSignAlgorithm())
                     .setProvider(certificateRequestDO.getProvider())
-                    .setPublicKey(convertPublicKey(publicKeyDO))
-                    .setPrivateKey(convertPrivateKey(privateKeyDO))
+                    .setPublicKey(convertPublicKey(publicKeyDO.get()))
+                    .setPrivateKey(convertPrivateKey(privateKeyDO.get()))
                     .build();
             Converter.PKCS10CertificationRequest2File(certificationRequest,
                     new FileOutputStream(REQUEST_FILE_HEADER + "test" + REQUEST_FILE_END));
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 

@@ -1,6 +1,7 @@
 package com.robert.openca.controller;
 
 
+import com.robert.openca.constant.UUIDUtil;
 import com.robert.openca.dao.certificate.CertificateInfoDO;
 import com.robert.openca.dao.certificate.CertificateRequestDO;
 import com.robert.openca.ra.CreatePKCS10CertificateRequest;
@@ -14,6 +15,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import javax.validation.constraints.NotNull;
 import java.math.BigInteger;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * 证书控制器
@@ -32,6 +34,9 @@ public class CertificateController {
 
     @Autowired
     private CertificateRequestDao certificateRequestDao;
+
+    @Autowired
+    private CreatePKCS10CertificateRequest createPKCS10CertificateRequest;
 
     /**
      * 创建证书接口
@@ -77,8 +82,8 @@ public class CertificateController {
      */
     @PostMapping("create/certificate/request")
     public void create(@RequestBody @NotNull CertificateRequestDO certificateRequestDO) {
-        new CreatePKCS10CertificateRequest().generatorRequestFromPEM(certificateRequestDO);
-        certificateRequestDO.setID("");
+        createPKCS10CertificateRequest.generatorRequestFromPEM(certificateRequestDO);
+        certificateRequestDO.setID(UUIDUtil.get());
         certificateRequestDao.save(certificateRequestDO);
     }
 }

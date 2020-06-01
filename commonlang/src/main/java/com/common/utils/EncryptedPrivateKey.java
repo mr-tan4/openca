@@ -77,7 +77,7 @@ public final class EncryptedPrivateKey {
             PBEParameterSpec pbeParameterSpec = new PBEParameterSpec(salt, SALT_COUNT);
             Cipher cipher = Cipher.getInstance(ALGORITHM + PADDING_ALGORITHM, "BC");
             cipher.init(Cipher.ENCRYPT_MODE, secretKey, pbeParameterSpec);
-            byte[] bytes = cipher.doFinal(Base64.decode(plaintext));
+            byte[] bytes = cipher.doFinal(plaintext.getBytes());
             return Base64.toBase64String(bytes);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();

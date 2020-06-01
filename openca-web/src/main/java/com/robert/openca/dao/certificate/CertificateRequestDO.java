@@ -29,7 +29,6 @@ public class CertificateRequestDO extends BasicDO {
                 .append("CN=")
                 .append(CommonName)
                 .toString();
-
     }
 
 }
