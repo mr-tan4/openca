@@ -111,7 +111,7 @@ public final class EncryptedPrivateKey {
             Cipher cipher = Cipher.getInstance(ALGORITHM + PADDING_ALGORITHM, "BC");
             cipher.init(Cipher.DECRYPT_MODE, secretKey, pbeParameterSpec);
             byte[] bytes = cipher.doFinal(Base64.decode(ciphertext));
-            return Base64.toBase64String(bytes);
+            return new String(bytes);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (NoSuchPaddingException e) {
