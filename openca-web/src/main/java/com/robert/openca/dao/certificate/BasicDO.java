@@ -154,4 +154,21 @@ public class BasicDO {
     public void setProvider(String provider) {
         Provider = provider;
     }
+
+    public String getSubject() {
+        return new StringBuilder()
+                .append("C=")
+                .append(CountyCode)
+                .append(",ST=")
+                .append(State)
+                .append(",L=")
+                .append(Location)
+                .append(",O=")
+                .append(Organization)
+                .append(",OU=")
+                .append(OrganizationUnit)
+                .append(",CN=")
+                .append(CommonName)
+                .toString();
+    }
 }

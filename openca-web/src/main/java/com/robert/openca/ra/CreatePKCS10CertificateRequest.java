@@ -15,7 +15,6 @@ import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 import org.bouncycastle.util.encoders.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.io.FileOutputStream;
 import java.security.PrivateKey;
@@ -84,6 +83,7 @@ public class CreatePKCS10CertificateRequest {
      * @return 私钥对象
      */
     private static PrivateKey convertPrivateKey(PrivateKeyDO privateKeyDO) {
+        log.info(privateKeyDO.toString());
         byte[] salt = Base64.decode(privateKeyDO.getSalt());
         String plantText = EncryptedPrivateKey.decryption(privateKeyDO.getPrivateKeyContext(),
                 privateKeyDO.getPassword(), salt);

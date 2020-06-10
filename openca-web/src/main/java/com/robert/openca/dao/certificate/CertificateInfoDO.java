@@ -14,7 +14,7 @@ import java.util.Date;
  * @since 2020.05.19
  */
 @Entity
-@Table(name = "CERTIFICATE_INFO")
+@Table(name = "CERTIFICATE_INFO", indexes = {@Index(columnList = "CN")})
 public class CertificateInfoDO extends BasicDO {
 
     /**
@@ -28,6 +28,12 @@ public class CertificateInfoDO extends BasicDO {
      */
     @Column(length = 11)
     private int pathLen;
+
+    /**
+     * 证书内容
+     */
+    @Column(columnDefinition = "mediumtext")
+    private String certificate_context;
 
     /**
      * 序列号
@@ -90,5 +96,13 @@ public class CertificateInfoDO extends BasicDO {
 
     public void setNoAfter(Date noAfter) {
         this.noAfter = noAfter;
+    }
+
+    public String getCertificate_context() {
+        return certificate_context;
+    }
+
+    public void setCertificate_context(String certificate_context) {
+        this.certificate_context = certificate_context;
     }
 }

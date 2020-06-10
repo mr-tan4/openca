@@ -1,6 +1,8 @@
 package com.robert.openca.dao.certificate;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.Table;
 
 /**
@@ -11,24 +13,20 @@ import javax.persistence.Table;
  * @since 2020-05-19
  */
 @Entity
-@Table(name = "CERTIFICATE_REQUEST_INFO")
+@Table(name = "CERTIFICATE_REQUEST_INFO", indexes = {@Index(columnList = "CN")})
 public class CertificateRequestDO extends BasicDO {
 
-    public String getSubject() {
-        return new StringBuilder()
-                .append("C=")
-                .append(CountyCode)
-                .append(",ST=")
-                .append(State)
-                .append(",L=")
-                .append(Location)
-                .append(",O=")
-                .append(Organization)
-                .append(",OU=")
-                .append(OrganizationUnit)
-                .append("CN=")
-                .append(CommonName)
-                .toString();
+    /**
+     * 证书请求文件内容
+     */
+    @Column(columnDefinition = "mediumtext")
+    private String certificate_request_context;
+
+    public String getCertificate_request_context() {
+        return certificate_request_context;
     }
 
+    public void setCertificate_request_context(String certificate_request_context) {
+        this.certificate_request_context = certificate_request_context;
+    }
 }

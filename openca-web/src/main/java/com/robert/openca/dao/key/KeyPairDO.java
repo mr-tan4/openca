@@ -11,7 +11,7 @@ import javax.persistence.*;
  * @since 2020-05-20
  */
 @Entity
-@Table(name = "KEY_PAIR_INFO")
+@Table(name = "KEY_PAIR_INFO",indexes = {@Index(columnList = "ID"),@Index(columnList = "alias")})
 public class KeyPairDO implements Cloneable {
 
     /**
@@ -43,6 +43,12 @@ public class KeyPairDO implements Cloneable {
      */
     @Column
     private boolean backup;
+
+    /**
+     * 密钥对别名
+     */
+    @Column(nullable = false)
+    private String alias;
 
     public String getID() {
         return ID;
@@ -82,6 +88,14 @@ public class KeyPairDO implements Cloneable {
 
     public void setBackup(boolean backup) {
         this.backup = backup;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
     public KeyPairDO clone() throws CloneNotSupportedException {
