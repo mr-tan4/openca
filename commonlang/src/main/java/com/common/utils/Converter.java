@@ -45,6 +45,16 @@ public class Converter {
     private static final String END_PUBLIC_KEY = "-----END PUBLIC KEY-----";
 
     /**
+     * 证书请求文件开头
+     */
+    private static final String BEGIN_CERTIFICATE_REQUEST = "-----BEGIN CERTIFICATE REQUEST-----\n";
+    /**
+     * 证书请求文件结尾
+     */
+    private static final String END_CERTIFICATE_REQUEST = "-----END CERTIFICATE REQUEST-----";
+
+
+    /**
      * 证书对象写出到文件 PEM格式
      *
      * @param x509Certificate  证书对象
@@ -391,6 +401,50 @@ public class Converter {
             e.printStackTrace();
         } catch (InvalidKeySpecException e) {
             e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 将证书文件转换为String
+     */
+
+    public static String Request2String(PKCS10CertificationRequest request) throws IOException {
+        String text = Base64.toBase64String(request.getEncoded());
+        LOGGER.info("request context {}", text);
+        int count = text.length() % 64;
+        if (count != 0) {
+            count = (text.length() / 64) + 1;
+        } else {
+            count = text.length() / 64;
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(BEGIN_CERTIFICATE_REQUEST);
+        for (int i = 0; i < count; i++) {
+            if (i == count - 1) {
+                stringBuilder.append(text.substring(i * 64));
+                stringBuilder.append("\n");
+            } else {
+                stringBuilder.append(text.substring(i * 64, (i + 1) * 64));
+                stringBuilder.append("\n");
+            }
+        }
+        stringBuilder.append(END_CERTIFICATE_REQUEST);
+        return stringBuilder.toString();
+    }
+
+    public static PKCS10CertificationRequest String2Request(String context) throws IOException {
+        PEMParser pemParser = new PEMParser(new StringReader(context));
+        try {
+            PemObject pemObject = pemParser.readPemObject();
+            PKCS10CertificationRequest pkcs10CertificationRequest = new PKCS10CertificationRequest(
+                    pemObject.getContent());
+            pemParser.close();
+            return pkcs10CertificationRequest;
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            pemParser.close();
         }
         return null;
     }

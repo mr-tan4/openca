@@ -46,10 +46,9 @@ public class CreatePKCS10CertificateRequest {
      * @param certificateRequestDO 请求信息
      * @return 文件存放路径
      */
-    public void generatorRequestFromPEM(CertificateRequestDO certificateRequestDO) {
+    public CertificateRequestDO generatorRequestFromPEM(CertificateRequestDO certificateRequestDO) {
         try {
             Optional<KeyPairDO> keyPairDO = keyPairDao.findById(certificateRequestDO.getKeyPairID());
-            log.info(certificateRequestDO.getKeyPairID());
             Optional<PrivateKeyDO> privateKeyDO = privateKeyDao.findById(keyPairDO.get().getPrivate_key_id());
             Optional<PublicKeyDO> publicKeyDO = publicKeyDao.findById(keyPairDO.get().getPublic_key_id());
             PKCS10CertificationRequest certificationRequest = new CertificateRequestBuilder()
@@ -59,11 +58,13 @@ public class CreatePKCS10CertificateRequest {
                     .setPublicKey(convertPublicKey(publicKeyDO.get()))
                     .setPrivateKey(convertPrivateKey(privateKeyDO.get()))
                     .build();
+            certificateRequestDO.setCertificate_request_context(Converter.Request2String(certificationRequest));
             Converter.PKCS10CertificationRequest2File(certificationRequest,
                     new FileOutputStream(REQUEST_FILE_HEADER + "test" + REQUEST_FILE_END));
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return certificateRequestDO;
     }
 
     /**

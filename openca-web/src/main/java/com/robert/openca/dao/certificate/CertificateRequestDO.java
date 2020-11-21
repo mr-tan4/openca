@@ -13,7 +13,7 @@ import javax.persistence.Table;
  * @since 2020-05-19
  */
 @Entity
-@Table(name = "CERTIFICATE_REQUEST_INFO", indexes = {@Index(columnList = "CN")})
+@Table(name = "CERTIFICATE_REQUEST_INFO")
 public class CertificateRequestDO extends BasicDO {
 
     /**

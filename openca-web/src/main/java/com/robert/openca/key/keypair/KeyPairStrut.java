@@ -22,6 +22,11 @@ public class KeyPairStrut {
      */
     private PublicKeyDO publicKeyDO;
 
+    /**
+     * 密钥对别名
+     */
+    private String alias;
+
     public PrivateKeyDO getPrivateKeyDO() {
         return privateKeyDO;
     }
@@ -36,5 +41,13 @@ public class KeyPairStrut {
 
     public void setPublicKeyDO(PublicKeyDO publicKeyDO) {
         this.publicKeyDO = publicKeyDO;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 }

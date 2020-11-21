@@ -68,6 +68,7 @@ public class KeyController {
             keyPairDO.setPublic_key_id(publicKeyDO.getId());
             keyPairDO.setPrivate_key_id(privateKeyDO.getId());
             keyPairDO.setBackup(false);
+            keyPairDO.setAlias(keyPairStrut.getAlias());
             keyPairDao.save(keyPairDO);
             log.info("创建密钥对成功!");
         } catch (Exception e) {

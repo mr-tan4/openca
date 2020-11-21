@@ -14,7 +14,7 @@ import java.util.Date;
  * @since 2020.05.19
  */
 @Entity
-@Table(name = "CERTIFICATE_INFO", indexes = {@Index(columnList = "CN")})
+@Table(name = "CERTIFICATE_INFO")
 public class CertificateInfoDO extends BasicDO {
 
     /**
